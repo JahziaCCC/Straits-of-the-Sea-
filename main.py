@@ -7,15 +7,15 @@ import feedparser
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 
-# مصادر الأخبار الرسمية وحسابات X (عبر تغذيات RSS)
+# المصادر الرسمية (وكالات أنباء وحسابات X المربوطة بـ RSS)
 SOURCES = [
+    # رابط RSS.app الخاص بك لتغطية الحسابات الرسمية
+    {"name": "تحديثات الحسابات الرسمية", "url": "https://rss.app/feeds/TulBq0pPDHsPVQAL.xml"},
+    
     # وكالات الأنباء الرسمية
     {"name": "وكالة الأنباء السعودية (واس)", "url": "https://www.spa.gov.sa/rss.xml"},
     {"name": "وكالة أنباء الإمارات (وام)", "url": "https://wam.ae/ar/rss"},
     {"name": "وكالة الأنباء الكويتية (كونا)", "url": "https://www.kuna.net.kw/RSS.aspx"},
-    
-    # يمكنك تحويل حسابات X الرسمية إلى RSS مجاناً عبر موقع rss.app أو nitter وإضافة الروابط هنا:
-    # {"name": "وزارة الدفاع السعودية", "url": "https://rss.app/feeds/xxx.xml"},
 ]
 
 HISTORY_FILE = "sent_posts.json"
@@ -56,7 +56,7 @@ def main():
     for source in SOURCES:
         try:
             feed = feedparser.parse(source["url"])
-            for entry in feed.entries[:5]:
+            for entry in feed.entries[:5]: # فحص أحدث 5 أخبار
                 post_id = entry.get("id", entry.get("link", entry.get("title")))
                 
                 if post_id not in sent_posts:
@@ -73,7 +73,7 @@ def main():
         save_sent_posts(sent_posts)
         print("تم إرسال التحديثات بنجاح إلى تليجرام.")
     else:
-        print("لا توجد أخبار أو تحديثات جديدة.")
+        print("لا توجد أخبار جديدة.")
 
 if __name__ == "__main__":
     main()
